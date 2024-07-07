@@ -3,7 +3,7 @@ import logging
 import os
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, List
 
 from tqdm import tqdm
 
@@ -25,25 +25,29 @@ def load_config() -> Dict[str, Any]:
         "TOPICS_PATH": "resources/topics.json",
         "ATTEMPTS": 1,
         "OUTPUT_DIR": "problems",
+        "OUTPUT_BASE_NAME": "new_problems",
         "IMPROVE_AFTER_FIRST_TRY": False,
         "CHECK_GPT_FEEDBACK": False,
+        "ADD_TIMESTAMP": False,
     }
 
 
 def parse_args() -> argparse.Namespace:
-    config = load_config()
     parser = argparse.ArgumentParser(description="Generate and validate problems.")
     parser.add_argument(
         "--attempts",
         type=int,
-        default=config["ATTEMPTS"],
         help="Number of attempts to generate problems.",
     )
     parser.add_argument(
         "--output-dir",
         type=str,
-        default=config["OUTPUT_DIR"],
         help="Directory to save the generated problems.",
+    )
+    parser.add_argument(
+        "--output-base-name",
+        type=str,
+        help="Name of the output file for the generated problems.",
     )
     parser.add_argument(
         "--check-gpt-feedback",
@@ -55,7 +59,27 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Flag to improve problem after the first try if the validation fails.",
     )
+    parser.add_argument(
+        "--add-timestamp",
+        action="store_true",
+        help="Flag to add a timestamp to the output file names.",
+    )
     return parser.parse_args()
+
+
+def update_config_with_args(config: Dict[str, Any], args: argparse.Namespace) -> None:
+    if args.attempts is not None:
+        config["ATTEMPTS"] = args.attempts
+    if args.output_dir is not None:
+        config["OUTPUT_DIR"] = args.output_dir
+    if args.output_base_name is not None:
+        config["OUTPUT_BASE_NAME"] = args.output_base_name
+    if args.improve_after_first_try is not None:
+        config["IMPROVE_AFTER_FIRST_TRY"] = args.improve_after_first_try
+    if args.check_gpt_feedback is not None:
+        config["CHECK_GPT_FEEDBACK"] = args.check_gpt_feedback
+    if args.add_timestamp is not None:
+        config["ADD_TIMESTAMP"] = args.add_timestamp
 
 
 def generate_and_validate(
@@ -171,12 +195,7 @@ def main() -> None:
     )
     args = parse_args()
     config = load_config()
-
-    # Update config with command-line arguments
-    config["ATTEMPTS"] = args.attempts
-    config["OUTPUT_DIR"] = args.output_dir
-    config["IMPROVE_AFTER_FIRST_TRY"] = args.improve_after_first_try
-    config["CHECK_GPT_FEEDBACK"] = args.check_gpt_feedback
+    update_config_with_args(config, args)
 
     problem_generator = ProblemGenerator(config)
 

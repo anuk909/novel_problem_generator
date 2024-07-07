@@ -28,7 +28,7 @@ class ProblemGenerator:
         self.topics = FileHandler.load_json_file(self.config["TOPICS_PATH"])
         self.validator = ProblemValidator(self.example_problem, self.client, config)
         self._validate_example_problem()
-        self.output_paths = self._setup_output_paths()
+        self.output_paths = self.get_output_file_paths()
 
     def _setup_openai_client(self) -> openai.AzureOpenAI:
         try:
@@ -54,15 +54,22 @@ class ProblemGenerator:
                 f"Example problem has warnings: {example_validation['warnings']}"
             )
 
-    def _setup_output_paths(self) -> Dict[str, str]:
-        timestamp = int(time.time())
+    def get_output_file_paths(self):
+        output_dir = self.config["OUTPUT_DIR"]
+        output_base_name = self.config["OUTPUT_BASE_NAME"]
+        add_timestamp = self.config["ADD_TIMESTAMP"]
+
+        if add_timestamp:
+            timestamp = int(time.time())
+            new_problems_file = f"{output_base_name}_{timestamp}.jsonl"
+            invalid_problems_file = f"invalid_problems_{timestamp}.jsonl"
+        else:
+            new_problems_file = f"{output_base_name}.jsonl"
+            invalid_problems_file = "invalid_problems.jsonl"
+
         return {
-            "new_problems": os.path.join(
-                self.config["OUTPUT_DIR"], f"new_problems_{timestamp}.jsonl"
-            ),
-            "invalid_problems": os.path.join(
-                self.config["OUTPUT_DIR"], f"invalid_problems_{timestamp}.jsonl"
-            ),
+            "new_problems": os.path.join(output_dir, new_problems_file),
+            "invalid_problems": os.path.join(output_dir, invalid_problems_file),
         }
 
     @property

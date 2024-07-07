@@ -3,6 +3,7 @@ import os
 import argparse
 import textwrap
 import logging
+import re
 from typing import Dict, Any
 
 
@@ -56,6 +57,10 @@ def json_to_markdown(json_data: Dict[str, Any]) -> str:
     return markdown
 
 
+def sanitize_filename(filename: str) -> str:
+    return re.sub(r"[^\w\-_\. ]", "_", filename)
+
+
 def convert_jsonl_to_markdown(
     input_file: str, output_dir: str, include_invalid: bool = False
 ) -> None:
@@ -89,7 +94,9 @@ def convert_jsonl_to_markdown(
                     output_dir, f"line_{line_counter}_invalid.md"
                 )
             else:
-                output_file = os.path.join(output_dir, f"line_{line_counter}.md")
+                task_id = problem_json["task_id"]
+                sanitized_task_id = sanitize_filename(task_id)
+                output_file = os.path.join(output_dir, f"{sanitized_task_id}.md")
 
             try:
                 with open(output_file, "w") as output:
