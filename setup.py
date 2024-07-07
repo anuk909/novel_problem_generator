@@ -7,9 +7,9 @@ from setuptools import setup, find_packages
 setup(
     name="novel-problem-generator",
     py_modules=["novel-problem-generator"],
-    version="1.0",
+    version="1.1",
     description="",
-    author="Shmulik Cohn",
+    author="Shmulik Cohen",
     packages=find_packages(),
     install_requires=[
         str(r)
@@ -17,9 +17,4 @@ setup(
             open(os.path.join(os.path.dirname(__file__), "requirements.txt"))
         )
     ],
-    entry_points={
-        "console_scripts": [
-            "evaluate_functional_correctness = human_eval.evaluate_functional_correctness",
-        ]
-    },
 )
