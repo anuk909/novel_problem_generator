@@ -3,7 +3,7 @@ import logging
 import os
 import random
 import time
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
 import openai
 from openai.types.chat import (
