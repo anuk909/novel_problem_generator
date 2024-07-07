@@ -13,6 +13,31 @@ def setup_logging():
     )
 
 
+def get_extra_info_str(extra_info: Dict[str, Any]):
+    extra_info_str = "## Extra Info\n\n"
+    if topics := extra_info.get("topics", None):
+        extra_info_str += "## Topics\n\n"
+        extra_info_str += f"{topics}\n\n"
+
+    if field := extra_info.get("field", None):
+        extra_info_str += "## Field\n\n"
+        extra_info_str += f"{field}\n\n"
+
+    if cover_story_words := extra_info.get("cover_story_words", None):
+        extra_info_str += "## Cover Story\n\n"
+        extra_info_str += f"{cover_story_words}\n\n"
+
+    if cleaned_prompt := extra_info.get("cleaned_prompt", None):
+        extra_info_str += (
+            "## Cleaned Prompt\n\n" f"```python\n{cleaned_prompt}\n```\n\n"
+        )
+
+    if warnings := extra_info.get("warnings", None):
+        extra_info_str += "## Warnings\n\n"
+        extra_info_str += "\n".join(["- " + warning for warning in warnings])
+    return extra_info_str
+
+
 def json_to_markdown(json_data: Dict[str, Any]) -> str:
     task_id = json_data["task_id"]
     prompt = json_data["prompt"]
@@ -22,28 +47,7 @@ def json_to_markdown(json_data: Dict[str, Any]) -> str:
     extra_info = json_data.get("extra_info", {})
 
     markdown = f"# Task ID: {task_id}\n\n"
-
-    if "topics" in extra_info:
-        markdown += "## Topics\n\n"
-        markdown += f"{extra_info['topics']}\n\n"
-
-    if "cover_story_words" in extra_info:
-        markdown += "## Cover Story\n\n"
-        markdown += f"{extra_info['cover_story_words']}\n\n"
-
     markdown += "## Prompt\n\n" f"```python\n{prompt}\n```\n\n"
-
-    if "cleaned_prompt" in extra_info:
-        markdown += (
-            "## Cleaned Prompt\n\n"
-            f"```python\n{extra_info['cleaned_prompt']}\n```\n\n"
-        )
-
-    if "warnings" in extra_info:
-        markdown += "## Warnings\n\n"
-        for warning in extra_info["warnings"]:
-            markdown += f"- {warning}\n"
-        markdown += "\n"
 
     markdown += (
         "## Canonical Solution\n\n"
@@ -53,6 +57,10 @@ def json_to_markdown(json_data: Dict[str, Any]) -> str:
         "## Entry Point\n\n"
         f"`{entry_point}`\n\n"
     )
+
+    if extra_info:
+        markdown += get_extra_info_str(extra_info)
+        markdown += "\n\n"
 
     return markdown
 

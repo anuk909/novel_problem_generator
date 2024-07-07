@@ -72,7 +72,7 @@ class ProblemValidator:
             )
             if not correctness_result["passed"]:
                 validation_result["warnings"].append(
-                    "Solution failed correctness check."
+                    f"Solution failed correctness check. reason: {correctness_result['result']}"
                 )
         except Exception as error:
             validation_result.update(
