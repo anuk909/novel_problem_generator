@@ -144,19 +144,27 @@ def main() -> None:
         ):
             try:
                 problem = future.result()
+                task_id = problem["task_id"]
                 if problem.pop("valid"):
-
+                    logging.info(f"Generated valid problem for task_id {task_id}")
+                    if problem.get("extra_info", {}).get("warnings"):
+                        logging.warning(
+                            f"Problem for task_id {task_id} has warnings: {problem['extra_info']['warnings']}"
+                        )
+                    problem_generator
                     problem_generator.save_problem(problem, is_valid=True)
                     valid_problems.append(problem)
                 else:
+                    reason = problem.get("reason", "Unknown")
+                    logging.info(
+                        f"Generated invalid problem for task_id {task_id}, reason: {reason}"
+                    )
                     problem_generator.save_problem(
                         problem,
                         is_valid=False,
-                        reason=problem.get("reason", "Unknown reason"),
+                        reason=reason,
                     )
-                    invalid_problems_counter[
-                        problem.get("reason", "Unknown reason")
-                    ] += 1
+                    invalid_problems_counter[reason] += 1
             except Exception as error:
                 logging.error(f"Unhandled exception: {error}")
 

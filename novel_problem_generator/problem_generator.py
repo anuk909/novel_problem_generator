@@ -124,14 +124,16 @@ class ProblemGenerator:
             "Create highly novel and complex problems for the HumanEval Dataset. The initial constraints for the problem are:",
             f"JSON format with keys: {self.validator.problem_keys}.",
             f"Example: {self.example_problem}",
-            "Prompt must start with 'def' and include examples that will help understanding the problem.",
-            "Test cases must start with 'def' and include at least five complex cases.",
-            "Solution must pass test cases and complete the prompt code without redefining the entry_point function from the prompt.",
-            "Combine multiple fields uniquely and efficiently.",
-            "Include constraints or twists, and consider time/space complexity requirements.",
+            "Prompt must start with 'def' and include examples that will help in understanding the problem.",
+            "Test cases must start with 'def' and include at least five different cases.",
+            "Canonical Solution must pass all test cases.",
+            "Canonical Solution must start with tab and the implemention of the function from the prompt. It shouldn't (!!!) "
+            "redefine the function from the prompt (and entry_point) in order to match the HumanEval execution format.",
         ]
         if require_30_lines:
-            constraints.append("The problem should require at least 30 lines to solve.")
+            constraints.append(
+                "The problem Should be hard to solve and require at least 30 lines to solve."
+            )
         constraints.append(
             "Include a 'cleaned_prompt' field that matches the problem prompt but without all the cover story around it, while maintaining the core field and include examples and explanations that make it easy to understand."
         )
