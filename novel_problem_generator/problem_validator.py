@@ -18,7 +18,9 @@ class ProblemValidator:
     def problem_keys(self) -> set:
         return set(self.example_problem_dict.keys())
 
-    def validate_problem(self, problem: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_problem(
+        self, problem: Dict[str, Any], check_gpt_feedback: bool
+    ) -> Dict[str, Any]:
         validation_result = {"valid": True, "reason": "", "warnings": []}
 
         if not self.problem_keys.issubset(problem.keys()):
@@ -26,7 +28,8 @@ class ProblemValidator:
 
         self._check_problem_structure(problem, validation_result)
         self._check_correctness(problem, validation_result)
-        validation_result["warnings"].extend(self._check_gpt_feedback(problem))
+        if check_gpt_feedback:
+            validation_result["warnings"].extend(self._check_gpt_feedback(problem))
 
         return validation_result
 
@@ -97,27 +100,3 @@ class ProblemValidator:
             return feedbacks
         except openai.OpenAIError as error:
             return [f"Error getting GPT feedback: {error}"]
-
-    def follow_up_prompt(
-        self, problem: Dict[str, Any], followup_reason: str, warnings: List[str]
-    ) -> Dict[str, Any]:
-        system_message = {
-            "role": "system",
-            "content": (
-                f"You are an expert problem setter for advanced coding competitions. You previously created a problem that had the following issues: "
-                f"{followup_reason}. Here are some additional issues identified: {warnings}.\n"
-                "Please revise and improve the problem statement to fix these issues and return JSON with same keys as the original problem."
-            ),
-        }
-        user_message = {"role": "user", "content": json.dumps(problem, indent=2)}
-
-        try:
-            completion = self.client.chat.completions.create(
-                model=self.config["OPENAI_MODEL"],
-                messages=[system_message, user_message],
-                response_format={"type": "json_object"},
-            )
-            return json.loads(completion.choices[0].message.content)
-        except (json.JSONDecodeError, openai.OpenAIError) as error:
-            logging.error(f"Error during follow-up: {error}")
-            raise

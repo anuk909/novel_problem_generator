@@ -43,7 +43,7 @@ class ProblemGenerator:
 
     def _validate_example_problem(self) -> None:
         example_validation = self.validator.validate_problem(
-            json.loads(self.example_problem)
+            problem=json.loads(self.example_problem), check_gpt_feedback=False
         )
         if not example_validation["valid"]:
             raise ValueError(
@@ -130,6 +130,30 @@ class ProblemGenerator:
                 "Use concepts from machine learning and ensure complexity and novelty."
             ),
         }
+
+    def follow_up_prompt(
+        self, problem: Dict[str, Any], followup_reason: str, warnings: List[str]
+    ) -> Dict[str, Any]:
+        system_message = {
+            "role": "system",
+            "content": (
+                f"You are an expert problem setter for advanced coding competitions. You previously created a problem that had the following issues: "
+                f"{followup_reason}. Here are some additional issues identified: {warnings}.\n"
+                "Please revise and improve the problem statement to fix these issues and return JSON with same keys as the original problem."
+            ),
+        }
+        user_message = {"role": "user", "content": json.dumps(problem, indent=2)}
+
+        try:
+            completion = self.client.chat.completions.create(
+                model=self.config["OPENAI_MODEL"],
+                messages=[system_message, user_message],
+                response_format={"type": "json_object"},
+            )
+            return json.loads(completion.choices[0].message.content)
+        except (json.JSONDecodeError, openai.OpenAIError) as error:
+            logging.error(f"Error during follow-up: {error}")
+            raise
 
     def save_problem(
         self, problem: Dict[str, Any], is_valid: bool, reason: str = ""
