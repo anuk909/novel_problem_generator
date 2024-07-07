@@ -81,7 +81,7 @@ class ProblemGenerator:
     def generate_problem(self, task_id: str) -> Dict[str, Any]:
         use_cover_story = self.config.get("USE_COVER_STORY", False)
         use_topics = self.config.get("USE_TOPICS", False)
-        use_fields = self.config.get("USE_FIELDS", False)
+        use_field = self.config.get("USE_FIELD", False)
         require_30_lines = self.config.get("REQUIRE_30_LINES", False)
 
         cover_story_words, topics, field = [], [], ""
@@ -89,7 +89,7 @@ class ProblemGenerator:
             cover_story_words = random.sample(self.cover_story_words, 2)
         if use_topics:
             topics = random.sample(self.topics, 2)
-        if use_fields:
+        if use_field:
             field = random.sample(self.fields, 1)
 
         messages = [
@@ -177,6 +177,7 @@ class ProblemGenerator:
                 f"You are an expert problem setter for advanced coding competitions. You previously created a problem that had the following issues: "
                 f"{followup_reason}. Here are some additional issues identified: {warnings}.\n"
                 "Please revise and improve the problem statement to fix these issues and return JSON with same keys as the original problem."
+                f"The content of the system prompt to generate this problem were :{self._get_system_message(self.config['REQUIRE_30_LINES'])}"
             ),
         }
         user_message = {"role": "user", "content": json.dumps(problem, indent=2)}
