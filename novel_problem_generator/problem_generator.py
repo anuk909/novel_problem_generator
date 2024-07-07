@@ -26,6 +26,7 @@ class ProblemGenerator:
             self.config["COVER_STORY_PATH"]
         )
         self.topics = FileHandler.load_json_file(self.config["TOPICS_PATH"])
+        self.fields = FileHandler.load_json_file(self.config["FIELDS_PATH"])
         self.validator = ProblemValidator(self.example_problem, self.client, config)
         self._validate_example_problem()
         self.output_paths = self.get_output_file_paths()
@@ -78,13 +79,23 @@ class ProblemGenerator:
         return task_id.split("/")[0] if task_id else ""
 
     def generate_problem(self, task_id: str) -> Dict[str, Any]:
-        cover_story_words, topics = random.sample(
-            self.cover_story_words, 2
-        ), random.sample(self.topics, 2)
-        messages = (
-            self._get_system_message(),
-            self._get_user_message(cover_story_words, topics),
-        )
+        use_cover_story = self.config.get("USE_COVER_STORY", False)
+        use_topics = self.config.get("USE_TOPICS", False)
+        use_fields = self.config.get("USE_FIELDS", False)
+        require_30_lines = self.config.get("REQUIRE_30_LINES", False)
+
+        cover_story_words, topics, field = [], [], ""
+        if use_cover_story:
+            cover_story_words = random.sample(self.cover_story_words, 2)
+        if use_topics:
+            topics = random.sample(self.topics, 2)
+        if use_fields:
+            field = random.sample(self.fields, 1)
+
+        messages = [
+            self._get_system_message(require_30_lines),
+            self._get_user_message(cover_story_words, topics, field),
+        ]
 
         try:
             completion = self.client.chat.completions.create(
@@ -101,41 +112,58 @@ class ProblemGenerator:
         problem_dict["extra_info"] = {
             "cover_story_words": cover_story_words,
             "topics": topics,
+            "field": field,
             "cleaned_prompt": problem_dict.pop("cleaned_prompt", ""),
         }
         return problem_dict
 
-    def _get_system_message(self) -> ChatCompletionSystemMessageParam:
+    def _get_system_message(
+        self, require_30_lines: bool
+    ) -> ChatCompletionSystemMessageParam:
+        constraints = [
+            "Create highly novel and complex problems for the HumanEval Dataset. The initial constraints for the problem are:",
+            f"JSON format with keys: {self.validator.problem_keys}.",
+            f"Example: {self.example_problem}",
+            "Prompt must start with 'def' and include examples that will help understanding the problem.",
+            "Test cases must start with 'def' and include at least five complex cases.",
+            "Solution must pass test cases and complete the prompt code without redefining the entry_point function from the prompt.",
+            "Combine multiple fields uniquely and efficiently.",
+            "Include constraints or twists, and consider time/space complexity requirements.",
+        ]
+        if require_30_lines:
+            constraints.append("The problem should require at least 30 lines to solve.")
+        constraints.append(
+            "Include a 'cleaned_prompt' field that matches the problem prompt but without all the cover story around it, while maintaining the core field and include examples and explanations that make it easy to understand."
+        )
+
+        constraints_str = "\n".join(constraints)
         return {
             "role": "system",
             "content": (
-                "You are an expert problem setter for advanced coding competitions. Create highly novel and complex problems "
-                "for the HumanEval Dataset. Requirements:\n"
-                f"1. JSON format with keys: {self.validator.problem_keys}.\n"
-                f"2. Example: {self.example_problem}\n"
-                "3. Prompt must start with 'def' and include examples that will help understanding the problem.\n"
-                "4. Test cases must start with 'def' and include at least five complex cases.\n"
-                "5. Solution must pass test cases and complete the prompt code without redefining the entry_point function from the prompt.\n"
-                "6. Combine multiple concepts uniquely and efficiently.\n"
-                "7. Include constraints or twists, and consider time/space complexity requirements.\n"
-                "8. The problem should require at least 30 lines to solve.\n"
-                "9. Include a 'cleaned_prompt' field that matches the problem prompt but without all the cover story around it, "
-                "make sure that the core concept of the questions stays the same and there are some examples and explanations that "
-                "makes it easy to understand."
+                "You are an expert problem setter for advanced coding competitions. Requirements:\n"
+                f"{constraints_str}"
             ),
         }
 
     def _get_user_message(
-        self, cover_story_words: List[str], topics: List[str]
+        self, cover_story_words: List[str], topics: List[str], field: str
     ) -> ChatCompletionUserMessageParam:
-        cover_story_str = " and ".join(cover_story_words)
-        topics_str = " and ".join(topics)
+        content_parts = ["Create a novel and complex problem"]
+        if cover_story_words:
+            content_parts.append(
+                f"with cover story words: {', '.join(cover_story_words)}"
+            )
+        if topics:
+            content_parts.append(f"related to the topics: {', '.join(topics)}")
+        if field:
+            content_parts.append(
+                f"using concepts and algorithms from the field: {field}"
+            )
+
+        content = " ".join(content_parts)
         return {
             "role": "user",
-            "content": (
-                f"Create a problem with a cover story about {cover_story_str} and involving the topics: {topics_str}. "
-                "Use concepts from machine learning and ensure complexity and novelty."
-            ),
+            "content": content,
         }
 
     def follow_up_prompt(

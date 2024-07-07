@@ -18,6 +18,11 @@ class ProblemValidator:
     def problem_keys(self) -> set:
         return set(self.example_problem_dict.keys())
 
+    @property
+    def extra_info_keys(self) -> set:
+        # May include warnings too
+        return {"cover_story_words", "topics", "field", "cleaned_prompt"}
+
     def validate_problem(
         self, problem: Dict[str, Any], check_gpt_feedback: bool
     ) -> Dict[str, Any]:
@@ -25,6 +30,13 @@ class ProblemValidator:
 
         if not self.problem_keys.issubset(problem.keys()):
             return {"valid": False, "reason": "Problem keys mismatch.", "warnings": []}
+        if extra_info := problem.get("extra_info", None):
+            if not self.extra_info_keys.issubset(extra_info.keys()):
+                return {
+                    "valid": False,
+                    "reason": "Extra info keys mismatch.",
+                    "warnings": [],
+                }
 
         self._check_problem_structure(problem, validation_result)
         self._check_correctness(problem, validation_result)
