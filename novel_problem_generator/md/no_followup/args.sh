@@ -1,0 +1,1 @@
+python main.py --attempts 10 --output-base-name no_followup --check-gpt-feedback --use-cover-story --use-topics --use-field --require-30-lines
