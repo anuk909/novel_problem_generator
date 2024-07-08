@@ -60,6 +60,9 @@ class ProblemGenerator:
         output_base_name = self.config["OUTPUT_BASE_NAME"]
         add_timestamp = self.config["ADD_TIMESTAMP"]
 
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
         if add_timestamp:
             timestamp = int(time.time())
             new_problems_file = f"{output_base_name}_{timestamp}.jsonl"
