@@ -131,7 +131,7 @@ def main() -> None:
     problem_generator = ProblemGenerator(config)
 
     valid_problems = []
-    invalid_problems_counter = defaultdict(int)
+    invalid_problems_counter: defaultdict = defaultdict(int)
     task_handler = TaskHandler(problem_generator, config)
 
     with ThreadPoolExecutor() as executor:
