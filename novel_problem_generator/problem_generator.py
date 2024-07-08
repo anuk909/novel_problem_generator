@@ -90,12 +90,12 @@ class ProblemGenerator:
         if use_topics:
             topics = random.sample(self.topics, 2)
         if use_field:
-            field = random.sample(self.fields, 1)
+            field = random.choice(self.fields)
 
-        messages = [
+        messages = (
             self._get_system_message(require_30_lines),
             self._get_user_message(cover_story_words, topics, field),
-        ]
+        )
 
         try:
             completion = self.client.chat.completions.create(
@@ -103,6 +103,7 @@ class ProblemGenerator:
                 messages=messages,
                 response_format={"type": "json_object"},
             )
+            assert completion.choices[0].message.content
             problem_dict = json.loads(completion.choices[0].message.content)
         except (openai.OpenAIError, json.JSONDecodeError) as error:
             logging.error(f"Error generating problem: {error}")
@@ -171,7 +172,7 @@ class ProblemGenerator:
     def follow_up_prompt(
         self, problem: Dict[str, Any], followup_reason: str, warnings: List[str]
     ) -> Dict[str, Any]:
-        system_message = {
+        system_message: ChatCompletionSystemMessageParam = {
             "role": "system",
             "content": (
                 f"You are an expert problem setter for advanced coding competitions. You previously created a problem that had the following issues: "
@@ -180,14 +181,18 @@ class ProblemGenerator:
                 f"The content of the system prompt to generate this problem were :{self._get_system_message(self.config['REQUIRE_30_LINES'])}"
             ),
         }
-        user_message = {"role": "user", "content": json.dumps(problem, indent=2)}
+        user_message: ChatCompletionUserMessageParam = {
+            "role": "user",
+            "content": json.dumps(problem, indent=2),
+        }
 
         try:
             completion = self.client.chat.completions.create(
                 model=self.config["OPENAI_MODEL"],
-                messages=[system_message, user_message],
+                messages=(system_message, user_message),
                 response_format={"type": "json_object"},
             )
+            assert completion.choices[0].message.content
             return json.loads(completion.choices[0].message.content)
         except (json.JSONDecodeError, openai.OpenAIError) as error:
             logging.error(f"Error during follow-up: {error}")
