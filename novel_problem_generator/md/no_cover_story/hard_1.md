@@ -3,86 +3,86 @@
 ## Prompt
 
 ```python
-def decode_alien_messages(messages, rules):
+def find_max_length_pairs(dna_sequences, k):
     """
-    In a simulation of an alien IoT network, messages are received in an alien language which must be decoded following specific rules. The rules provide information on how symbols in the alien language should be translated to human-understandable messages. Each rule might suggest recursive translation steps.
+    Given a list of DNA sequences (strings composed of the characters 'A', 'C', 'G', and 'T') and an integer k, design a function to identify the maximum size of a disjoint set of DNA sequences where each sequence in the set can be paired with at least one other sequence with which it shares a common substring of length at least k.
 
-    The function should take a list of messages and a dictionary where keys are strings of alien symbols and values are their corresponding translations, which may contain other alien symbols that need further resolving until they translate into a purely human readable form (i.e., English characters).
+    A set of sequences is disjoint if no sequence appears more than once in the set. The function should aim to include the largest number of DNA sequences in the matching set.
 
-    The translator should prioritize the longest key matching the beginning of any segment of the message. If there are overlaps in the keys (for example, 'abc' and 'ab'), always prioritize the longest possible match first.
-
-    For example, with messages = ['abc', 'def'] and rules = {'a': 'hello', 'b': ' you', 'c': ' friend', 'd': 'goodbye', 'ef': ' unbeliever'}, the function should return ['hello you friend', 'goodbye unbeliever'].
+    For example:
+    - dna_sequences = ['ACTGAC', 'TGACAC', 'ACTGAG', 'CTGAGC'], k = 3 returns 4 because all sequences can be matched in pairs ('ACTGAC' with 'TGACAC', 'ACTGAG' with 'CTGAGC') sharing at least a substring of length 3.
+    - dna_sequences = ['AACCTT', 'GGCCTA'], k = 2 should return 0 as no two sequences can share a common substring of length 2.
 
     Note:
-    - Ensure the messages are translated as completely as possible following all rules and tackling possible recursion.
+    - The function should clearly return the number of sequences in the optimal disjoint set.
+    - Ensure the disjoint condition is maintained; no sequence should repeat within the resulting set.
     """
 ```
 
 ## Canonical Solution
 
 ```python
-    def decode_alien_messages(messages, rules):
-        # Precompute all rule keys sorted by length in descending order for prioritization
-        sorted_rules = sorted(rules.keys(), key=len, reverse=True)
-        def translate(message):
-            translated = ''
-            i = 0
-            while i < len(message):
-                matched = False
-                for rule in sorted_rules:
-                    if message.startswith(rule, i):
-                        translated += translate(rules[rule])
-                        i += len(rule)
-                        matched = True
-                        break
-                if not matched:
-                    translated += message[i]
-                    i += 1
-            return translated
-        return [translate(msg) for msg in messages]
+    from collections import defaultdict
+def find_max_length_pairs(dna_sequences, k):
+    def has_common_substring(seq1, seq2, k):
+        substrings = {seq1[i:i+k] for i in range(len(seq1)-k+1)}
+        return any(seq2[i:i+k] in substrings for i in range(len(seq2)-k+1))
+
+    def build_graph(sequences):
+        graph = defaultdict(list)
+        for i, seq1 in enumerate(sequences):
+            for j, seq2 in enumerate(sequences):
+                if i != j and has_common_substring(seq1, seq2, k):
+                    graph[i].append(j)
+        return graph
+
+    def bipartite_maximum_matching(graph):
+        # Implementation of a matching algorithm (e.g., Hopcroft–Karp)
+        pass
+
+    graph = build_graph(dna_sequences)
+    return bipartite_maximum_matching(graph)
 ```
 
 ## Test Cases
 
 ```python
 def check(candidate):
-    assert candidate(['abc', 'def'], {'a': 'hello', 'b': ' you', 'c': ' friend', 'd': 'goodbye', 'ef': ' unbeliever'}) == ['hello you friend', 'goodbye unbeliever']
-    assert candidate(['x', 'y', 'z'], {'x': 'a', 'y': 'b', 'z': 'c', 'a': 'alpha', 'b': 'beta', 'c': 'gamma'}) == ['alpha', 'beta', 'gamma']
-    assert candidate(['ab', 'cd'], {'a': 'one ', 'b': 'two', 'c': 'three ', 'd': 'four'}) == ['one two', 'three four']
-    assert candidate(['hello'], {}) == ['hello']
-    assert candidate(['a b c'], {'a': 'X', 'b': ' Y ', 'c': 'Z'}) == ['X Y Z']
+    assert candidate(['ACTGAC', 'TGACAC', 'ACTGAG', 'CTGAGC'], 3) == 4
+    assert candidate(['AACCTT', 'GGCCTA'], 2) == 0
+    assert candidate(['AAGT', 'CTTA', 'GTAA'], 2) == 2
+    assert candidate(['ACTGACC', 'TGACACC', 'ACTGAGG', 'CTGAGCC'], 4) == 2
+    assert candidate(['ACTGACT', 'TGACACT', 'ACTGAAG', 'CTGAGCC', 'AGTAGGG'], 3) == 4
 ```
 
 ## Entry Point
 
-`decode_alien_messages`
+`find_max_length_pairs`
 
 ## Extra Info
 
 ## Topics
 
-['Alien Dictionary', 'Recursion']
+['Graph Theory', 'Bipartite Matching']
 
 ## Field
 
-['Internet of Things (IoT)']
+Bioinformatics
 
 ## Cleaned Prompt
 
 ```python
-def decode_alien_messages(messages, rules):
-    """
-    Decode messages given in an alien language according to provided rules. The rules may involve recursive references, and always prioritize the longest match first. Ensure translations follow rules recursively and completely.
+Write a function to find the maximum size of a disjoint set of DNA sequences where each sequence can be paired with at least one other sequence sharing a common substring of at least length k. The function should return the number of sequences that can be optimally matched.
 
-    Example:
-    messages = ['abc', 'def'], rules = {'a': 'hello', 'b': ' you', 'c': ' friend', 'd': 'goodbye', 'ef': ' unbeliever'}
-    Expected output: ['hello you friend', 'goodbye unbeliever']
-    """
+    Examples:
+    - Given ['ACTGAC', 'TGACAC', 'ACTGAG', 'CTGAGC'], k = 3, the function should return 4.
+    - Given ['AACCTT', 'GGCCTA'], k = 2, the function should return 0.
 ```
 
 ## Warnings
 
-- Solution failed correctness check. reason: failed: invalid syntax (<string>, line 13)
-- 5, Incomplete Canonical Solution: The provided canonical solution has several critical issues which make it non-functional. Firstly, it lacks proper string slicing and indexing within the recursive solve function, leading to potential infinite loops or incorrect recursive calls. Specifically, the line where it is supposed to slice the translation string does not update the variable 'i' correctly, likely causing infinite recursion when a rule's translation contains another rule keyword. Secondly, the actual function decode_alien_messages is missing in the canonical solution. It only consists of helper functions and there is no initial function definition or proper handling of input and output as described in the prompt.
-- 4, Ambiguity in Problem Statement: The problem statement lacks clarity on how the function should handle overlapping keys in the rules dictionary where a longer rule key contains a shorter rule key (e.g., 'abcd' and 'abc'). There is no specification on whether the longest possible rule should be matched first or some other strategy should be adopted. This ambiguity can lead to multiple valid interpretations, affecting how participants might implement their solutions.
+- Solution failed correctness check. reason: failed: invalid syntax (<string>, line 14)
+- 5, Unclear problem constraints: The prompt does not specify the constraints on the length of the DNA sequences or the range of the integer k. Without these constraints, it's unclear how to handle edge cases or optimize the solution for performance.
+- 4, Ambiguous output: The problem does not clarify how to output or handle cases where no valid sets of pairings exist beyond the given example. It also does not specify if the output should consider the optimal size of more than one disjoint subset that may exist.
+- 4, Complex implementation requirement without guidance: The requirement to implement or use a sophisticated algorithm such as bipartite maximum matching (an advanced graph theory algorithm) without any boilerplate or guidance could be overly challenging for the intended audience, unless the competition specifically targets an advanced level.
 
