@@ -3,7 +3,11 @@ import logging
 from typing import Dict, Any, List
 
 import openai
-from human_eval.execution import check_correctness
+from openai.types.chat import (
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
+)
+from human_eval.execution import check_correctness  # type: ignore
 
 
 class ProblemValidator:
@@ -41,6 +45,7 @@ class ProblemValidator:
         self._check_problem_structure(problem, validation_result)
         self._check_correctness(problem, validation_result)
         if check_gpt_feedback:
+            assert isinstance(validation_result["warnings"], List)
             validation_result["warnings"].extend(self._check_gpt_feedback(problem))
 
         return validation_result
@@ -80,7 +85,7 @@ class ProblemValidator:
             )
 
     def _check_gpt_feedback(self, problem: Dict[str, Any]) -> List[str]:
-        system_message = {
+        system_message: ChatCompletionSystemMessageParam = {
             "role": "system",
             "content": (
                 "You are an expert in analyzing and critiquing problem statements, especially for coding competitions. "
@@ -88,15 +93,21 @@ class ProblemValidator:
                 "The output format should be 'severity, flaw_name: description' with each flaw on a new line, severity is between 1 to 5 with 5 being the highest severity."
             ),
         }
-        user_message = {"role": "user", "content": json.dumps(problem, indent=2)}
+        user_message: ChatCompletionUserMessageParam = {
+            "role": "user",
+            "content": json.dumps(problem, indent=2),
+        }
 
         try:
             completion = self.client.chat.completions.create(
                 model=self.config["OPENAI_MODEL"],
-                messages=[system_message, user_message],
+                messages=(system_message, user_message),
             )
-            gpt_feedback = completion.choices[0].message.content.split("\n")
-
+            if content := completion.choices[0].message.content:
+                gpt_feedback = content.split("\n")
+            else:
+                return []
+            
             feedbacks = []
             for line in gpt_feedback:
                 line = line.strip()
