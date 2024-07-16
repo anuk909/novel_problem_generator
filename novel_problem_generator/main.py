@@ -68,9 +68,16 @@ def try_improving_problem(
 ) -> Dict[str, Any]:
     try:
         extra_info = problem.pop("extra_info", {})
-        problem["extra_info"] = extra_info
-        problem["extra_info"]["warnings"] = warnings
-        return problem_generator.follow_up_prompt(problem, followup_reason, warnings)
+        new_problem = problem_generator.follow_up_prompt(
+            problem, followup_reason, warnings
+        )
+        new_problem["extra_info"] = {
+            "cover_story_words": extra_info.get("cover_story_words", []),
+            "topics": extra_info.get("topics", []),
+            "field": extra_info.get("field", ""),
+            "cleaned_prompt": new_problem.pop("cleaned_prompt", ""),
+        }
+        return new_problem
     except Exception as error:
         logging.error(f"Error improving problem: {error}")
         problem["valid"] = False
