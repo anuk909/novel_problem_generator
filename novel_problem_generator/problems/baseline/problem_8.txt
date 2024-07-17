@@ -1,0 +1,26 @@
+Coding Exercise:
+Given a list of integers, find two numbers in the array that sum to a specific target number. Your solution should return the indices of the two numbers in the list, where index1 must be less than index2.
+
+Canonical Python Solution:
+
+```python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # Create a hashmap to store the value and its index
+        hashmap = {}
+        # Loop through the list
+        for i, num in enumerate(nums):
+            # Find the companion number to meet the target
+            complement = target - num
+            # Check if the companion number exists in hashmap
+            if complement in hashmap:
+                # Return the indices that sum to target
+                return [hashmap[complement], i]
+            # If not found, store the current number and its index
+            hashmap[num] = i
+        # If no solution, return an empty list
+        return []
+```
+
+Explanation: 
+This solution uses a hashmap data structure to store the numbers and their indices as key-value pairs while iterating through the given array. For each element, it calculates the complement (i.e., target - current number) and checks if the complement exists in the hashmap. If found, it means that the current index and the stored index of the complement sum to the target. These indices are then returned. If no valid pairs are found by the end of the iteration, an empty list is returned. This approach ensures a time complexity of O(n) where n is the number of elements in the list, as each element is checked exactly once.
