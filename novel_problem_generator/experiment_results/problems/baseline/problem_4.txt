@@ -1,0 +1,58 @@
+### Coding Exercise
+
+Problem Statement:
+Given a positive integer, n, write a function that returns the maximum product of any combination of distinct numbers whose sum is equal to n.
+
+Example 1:
+```
+Input: n = 10
+Output: 36
+Explanation: The combination of numbers (3, 7) has the sum of 10, and their product is 21. However, the combination (2, 3, 5) also has the sum of 10, but their product is 30, which is not the maximum. The maximum product is 36 from the combination (3, 3, 4).
+```
+
+Example 2:
+```
+Input: n = 5
+Output: 6
+Explanation: Number 5 can be split into (2, 3) which sums to 5 and the product of 2 and 3 is 6 which is the maximum.
+```
+
+The function should have a signature of:
+```python
+def max_product_sum(n: int) -> int:
+```
+
+### Solution
+
+To solve the problem, we can think about how we can partition `n` into smaller integers and maximize their product. A core observation based on empirical results and mathematical justification shows that splitting numbers primarily into '3's and then '2's (when necessary) gives the highest product. 
+This comes from the idea that 3×3 > 2×2×2 and 3 > 2×1, so it is more profitable to represent `n` using more numbers `3`. When reducing the sum `n` by `3` multiple times would leave a remainder of `1`, we use `2` for the last summand to avoid multiplying by `1`.
+
+Let's develop this logic into the function:
+
+```python
+def max_product_sum(n: int) -> int:
+    if n == 2:
+        return 1
+    elif n == 3:
+        return 2
+    # Handle when reduced numbers to small n
+    products = [0, 1, 2, 3]
+    
+    for num in range(4, n + 1):
+        # Start maximizing product splitting into all possible pairs
+        max_val = 0
+        
+        for i in range(1, num):
+            max_val = max(max_val, products[i] * products[num - i])
+        products.append(max_val)
+        
+    return products[n]
+
+# Examples
+print(max_product_sum(10))  # Output: 36
+print(max_product_sum(5))   # Output: 6
+```
+
+This dynamic programming approach based on storing results from previous computations in `products` provides an efficient solution to find the maximum product for any integer partition of `n`. Each number `num` up to `n` calculates the maximum product by evaluating splits `(i, num-i)` and finding the maximum among them.
+
+The function `max_product_sum` efficiently computes the maximum product up to `n` by making use of overlapping subproblems. Effective data handling in `products` makes the solution optimal and prevents redundant calculations.

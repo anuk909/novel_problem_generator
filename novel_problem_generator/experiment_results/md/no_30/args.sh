@@ -1,0 +1,1 @@
+python main.py --attempts 10 --output-base-name no_30 --check-gpt-feedback --improve-after-first-try --use-cover-story --use-topics --use-field

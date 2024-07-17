@@ -1,0 +1,53 @@
+## Problem: Median of Two Sorted Arrays
+
+Given two sorted arrays `nums1` and `nums2` of size `m` and `n` respectively, return the median of the two sorted arrays.
+
+### Example 1:
+Input: nums1 = [1,3], nums2 = [2]
+Output: 2.00000
+Explanation: sorted array = [1,2,3] and median is 2.
+
+### Example 2:
+Input: nums1 = [1,2], nums2 = [3,4]
+Output: 2.50000
+Explanation: sorted array = [1,2,3,4] and median is (2 + 3)/2 = 2.5.
+
+### Example 3:
+Input: nums1 = [0,0], nums2 = [0,0]
+Output: 0.00000
+
+### Example 4:
+Input: nums1 = [], nums2 = [1]
+Output: 1.00000
+
+### Example 5:
+Input: nums1 = [2], nums2 = []
+Output: 2.00000
+
+### Constraints:
+- nums1,length and nums2,length will each be between 0 and 1000.
+- All elements of nums1 and nums2 will be in the range of -10^6 to 10^6.
+
+*Note: Since the list might have an odd total number of elements, the median could be either directly the middle element or the average of the two middle elements.*
+
+## Solution
+
+```python
+def findMedianSortedArrays(nums1, nums2):
+    combined = sorted(nums1 + nums2)
+    n = len(combined)
+    
+    if n % 2 == 1:
+        return float(combined[n // 2])
+    else:
+        return (combined[n // 2 - 1] + combined[n // 2]) / 2.0
+
+# Example Usage and Test Cases
+assert findMedianSortedArrays([1, 3], [2]) == 2.0
+assert findMedianSortedArrays([1, 2], [3, 4]) == 2.5
+assert findMedianSortedArrays([0,0], [0,0]) == 0.0
+assert findMedianSortedArrays([], [1]) == 1.0
+assert findMedianSortedArrays([2], []) == 2.0
+```
+
+This solution simply merges the two arrays and then computes the median based on the combined sorted array's properties (either total odd count or even count). This approach utilizes Python's powerful list capabilities and sorting function, ensuring clarity and efficiency within the constraint limits.

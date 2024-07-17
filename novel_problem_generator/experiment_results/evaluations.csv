@@ -1,0 +1,81 @@
+Group,TaskNumber,Sensibleness,Clarity,Novelty,Similar Exercise (if novelty != 5),Difficulty,Notes
+all features,1,5,3,3,https://leetcode.com/problems/trapping-rain-water/description/,4,
+all features,2,4,4,1,https://www.geeksforgeeks.org/palindrome-partitioning-dp-17/,3,
+all features,3,4,4,2,https://www.geeksforgeeks.org/sum-of-nodes-in-a-binary-search-tree-with-values-from-a-given-range/,4,
+all features,4,4,4,4,,3,Maybe Example
+all features,5,4,4,4,,2,
+all features,6,3,3,2,https://leetcode.com/problems/number-of-islands/description/,3,
+all features,7,3,3,2,https://leetcode.com/problems/course-schedule/description/,3,
+all features,8,3,3,5,,3,
+all features,9,4,4,1,https://leetcode.com/problems/3sum/description/,2,
+all features,10,3,4,4,https://leetcode.com/problems/longest-palindromic-subsequence/description/,3,
+no cover story,1,4,4,3,https://www.geeksforgeeks.org/longest-common-substring-dp-29/,4,
+no cover story,2,3,4,2,https://www.geeksforgeeks.org/reverse-a-linked-list/,3,
+no cover story,3,4,4,5,,4,EXAMPLE Problem
+no cover story,4,2,2,1,https://leetcode.com/problems/jump-game/description/,1,Broke gpt
+no cover story,5,5,5,1,,2,
+no cover story,6,3,4,2,https://www.baeldung.com/cs/graph-number-of-shortest-paths,3,Random Quantom
+no cover story,7,4,4,3,https://www.geeksforgeeks.org/longest-consecutive-subsequence/ ,2,
+no cover story,8,2,3,4,,3,
+no cover story,9,4,4,3,https://leetcode.com/tag/minimum-spanning-tree/,3,(MST + simple demand for valid edges)
+no cover story,10,5,5,1,https://gist.github.com/sylvainpolletvillard/bff98911471a27f513dbd68e926603e4,4,
+no 30,1,4,5,2,,3,
+no 30,2,5,5,5,,4,
+no 30,3,5,5,4,,4,
+no 30,4,3,2,1,,3,
+no 30,5,3,3,2,,2,
+no 30,6,4,4,1,,2,
+no 30,7,5,4,1,,1,
+no 30,8,4,5,1,Non-overlapping Intervals - LeetCode,2,
+no 30,9,4,4,1,,2,
+no 30,10,4,4,2,,1,
+no topics,1,5,5,5,,2,simple prime sum + alternate check
+no topics,2,5,4,4,,1,annoyingly alternates between block and rock
+no topics,3,5,5,1,,1,classic caeser cipher with string key
+no topics,4,5,5,3,,3,"not trivial, but only wraps alg. and not requires design"
+no topics,5,5,5,2,,4,"basically asking you ""train a model"" - not really inventive"
+no topics,6,4,4,2,https://leetcode.com/problems/count-substrings-starting-and-ending-with-given-character/description/,1,find sub strings in string
+no topics,7,5,3,1,,1,caeser cipher + xor with known key
+no topics,8,4,3,2,,4,implement knn
+no topics,9,5,4,1,https://leetcode.com/problems/edit-distance/description/,3,
+no topics,10,3,4,4,,4,
+no followup,1,4,4,1,https://leetcode.com/problems/merge-intervals/description/,1,classic question
+no followup,2,5,5,1,https://leetcode.com/discuss/interview-question/1528566/interview-question-distribute-money-as-evenly-as-possible,1,classic question
+no followup,3,5,5,1,https://www.geeksforgeeks.org/kmp-algorithm-for-pattern-searching/,4,
+no followup,4,4,5,4,,2,
+no followup,5,5,4,3,https://leetcode.com/problems/clone-graph/description/,2,
+no followup,6,4,3,4,,2,
+no followup,7,5,5,2,,1,basic db
+no followup,8,5,5,1,https://www.geeksforgeeks.org/find-the-largest-subarray-with-0-sum/,2,
+no followup,9,4,4,3,https://stackoverflow.com/questions/67202139/move-robot-in-a-10-x-10-grid,2,
+no followup,10,5,5,1,https://leetcode.com/discuss/study-guide/1152328/01-Knapsack-Problem-and-Dynamic-Programming,2,knapsack
+no field,1,5,5,1,1679. Max Number of K-Sum Pairs,2,
+no field,2,5,5,5,,,
+no field,3,2,3,2,,,
+no field,4,3,4,3,,3,
+no field,5,5,5,4,https://leetcode.com/problems/unique-paths/description/,4,
+no field,6,4,4,3,,1,probabilty game
+no field,7,5,4,2,,1,simple greedy expectancy maximization
+no field,8,5,5,1,https://www.geeksforgeeks.org/number-subarrays-sum-exactly-equal-k/,2,
+no field,9,4,3,3,,3,"mistake in the question body, basically interval merge as an optimization problem"
+no field,10,5,5,1,,2,knapsack
+no features,1,5,4,2,https://www.geeksforgeeks.org/minimize-maximum-adjacent-difference-in-a-path-from-top-left-to-bottom-right/,4,
+no features,2,4,5,3,,1,
+no features,3,2,4,2,https://pawelkuklik.com/dominant-frequency/,2,
+no features,4,4,4,4,https://algo.monster/liteproblems/1100 + https://www.geeksforgeeks.org/count-total-anagram-substrings/,3,
+no features,5,5,4,2,https://huggingface.co/datasets/dhyay/LeetCode_Style_QA?row=40,1,
+no features,6,5,4,1,https://leetcode.com/problems/minimum-path-sum/description/,2,
+no features,7,5,4,4,https://www.educative.io/answers/project-euler-11-largest-product-in-a-grid,3,It doesn't sound novel but I couldn't find it anywhere online
+no features,8,4,4,3,,1,
+no features,9,4,4,1,https://www.geeksforgeeks.org/length-of-the-longest-subsequence-consisting-of-distinct-elements/,3,
+no features,10,4,4,3,https://www.geeksforgeeks.org/check-horizontal-vertical-symmetry-binary-matrix/,3,Cool trick with the ascii art that I couldn't find online
+baseline,1,5,5,2,https://www.geeksforgeeks.org/program-to-print-a-pattern-of-numbers/,2,
+baseline,2,5,5,3,https://www.geeksforgeeks.org/count-substrings-with-even-frequency-of-each-character-and-one-exception/,2,
+baseline,3,5,5,1,https://www.geeksforgeeks.org/length-of-the-longest-substring-without-repeating-characters/,2,
+baseline,4,5,5,2,https://www.geeksforgeeks.org/breaking-integer-to-get-maximum-product/,3,
+baseline,5,5,4,1,https://leetcode.com/problems/unique-email-addresses/description/,2,
+baseline,6,5,5,1,https://leetcode.com/problems/find-all-anagrams-in-a-string/description/,3,
+baseline,7,5,5,1,https://www.geeksforgeeks.org/rotate-a-matrix-by-90-degree-in-clockwise-direction-without-using-any-extra-space/,2,
+baseline,8,5,5,1,https://leetcode.com/problems/two-sum/description/,2,
+baseline,9,5,5,1,https://leetcode.com/problems/median-of-two-sorted-arrays/description/,2,
+baseline,10,5,5,1,https://www.geeksforgeeks.org/minimum-number-of-jumps-to-reach-end-of-a-given-array/,2,

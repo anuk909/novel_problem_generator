@@ -1,0 +1,63 @@
+**Exercise: Find All Anagrams in a String**
+
+Given a string `s` and a string `p`, find all the start indices of `p`'s anagrams in `s`. Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100. The order of output does not matter.
+
+**Example 1:**
+```
+Input:
+s: "cbaebabacd" p: "abc"
+
+Output:
+[0, 6]
+
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+```
+
+**Example 2:**
+```
+Input:
+s: "abab" p: "ab"
+
+Output:
+[0, 1, 2]
+
+Explanation:
+The substring with start index = 0 is "ab", which is an anagram of "ab".
+The substring with start index = 1 is "ba", which is an anagram of "ab".
+The substring with start index = 2 is "ab", which is an anagram of "ab".
+```
+
+You should create a function to implement your solution.
+
+**Canonical Python Solution:**
+```python
+from collections import Counter
+
+def findAnagrams(s: str, p: str):
+    res = []
+    p_count = Counter(p)
+    s_count = Counter(s[:len(p)-1])
+    
+    for i in range(len(p) - 1, len(s)):
+        # Add the next letter from the string to the window
+        s_count[s[i]] += 1
+        
+        # If the window matches the frequency count of p, append to result
+        if s_count == p_count:
+            res.append(i - len(p) + 1)
+        
+        # Decrease the left-most count by 1 and remove it if it hits 0
+        s_count[s[i - len(p) + 1]] -= 1
+        if s_count[s[i - len(p) + 1]] == 0:
+            del s_count[s[i - len(p) + 1]]
+    
+    return res
+
+# Example usage:
+print(findAnagrams("cbaebabacd", "abc"))  # Output: [0, 6]
+print(findAnagrams("abab", "ab"))  # Output: [0, 1, 2]
+```
+
+This code dynamically updates a moving window across `s` to check for anagrams by comparing character counts to those of `p`, and adjusting the counts as it progresses. This results in an efficient solution which is able to use the `Counter` functionality to manage character frequencies effectively.

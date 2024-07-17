@@ -1,0 +1,64 @@
+## Exercise Title: Unique Email Addresses
+
+Every email consists of a local name and a domain name separated by the '@' symbol. For example, in the email "example@gmail.com", "example" is the local name and "gmail.com" is the domain name.
+
+However, some email addresses can apply certain simplifications to reduce the local name. 
+
+1. If the local name contains a '+', ignore this and everything after it.
+2. Any '.' in the local name should be ignored.
+
+Given a list of emails, return the number of unique email addresses that actually receive mails after applying the simplifications.
+
+**Example 1:**
+
+```
+Input: ["test.email+alex@leetcode.com","test.email.leet+alex@code.com","test.email+lee@leetcode.com"]
+Output: 2
+Explanation:
+After simplifications:
+1. "test.email+alex@leetcode.com" becomes "testemail@leetcode.com"
+2. "test.email.leet+alex@code.com" becomes "testemail@code.com" 
+3. "test.email+lee@leetcode.com" becomes "testemail@leetcode.com"
+There are two unique email addresses: "testemail@leetcode.com" and "testemail@code.com".
+```
+
+**Example 2:**
+
+```
+Input: ["a@leetcode.com","b@leetcode.com","c@leetcode.com"]
+Output: 3
+```
+
+**Note:**
+
+- The length of emails will not exceed 100.
+- The length of each email string will not exceed 100.
+
+**Constraints:**
+
+- 1 <= emails.length <= 100
+- 1 <= emails[i].length <= 100
+
+**Function Signature:**
+```python
+def num_unique_emails(emails: List[str]) -> int:
+```
+
+## Solution in Python:
+
+```python
+def num_unique_emails(emails):
+    unique_emails = set()
+    
+    for email in emails:
+        local, domain = email.split('@')
+        local = local.split('+')[0]  # discard portion after '+' if present
+        local = local.replace('.', '')  # remove all periods from local
+        unique_emails.add(local + '@' + domain)
+    
+    return len(unique_emails)
+
+# Test cases
+print(num_unique_emails(["test.email+alex@leetcode.com","test.email.leet+alex@code.com","test.email+lee@leetcode.com"]))  # Output: 2
+print(num_unique_emails(["a@leetcode.com","b@leetcode.com","c@leetcode.com"]))  # Output: 3
+```

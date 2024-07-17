@@ -1,0 +1,47 @@
+**Coding Exercise**
+
+You are given an array of integers, where each element represents the maximum number of steps that can be jumped going forward from that element. Write a function to return the minimum number of jumps needed to reach the last index starting from the first index. If it is not possible to jump to the last index, return -1.
+
+Example 1:
+```
+Input: [2,3,1,1,4]
+Output: 2
+Explanation: The minimum number of jumps to reach the last index is 2. Jump from index 0 to index 1 (jump length = 3) then to the last index (jump length = 4).
+```
+
+Example 2:
+```
+Input: [3,2,1,0,4]
+Output: -1
+Explanation: It is not possible to reach the last index.
+```
+
+**Solution**
+
+```python
+def min_jumps(nums):
+    if not nums or len(nums) == 1:
+        return 0
+    
+    jumps = 0
+    current_end = 0
+    furthest = 0
+    for i in range(len(nums)-1):
+        furthest = max(furthest, i + nums[i])
+        if i == current_end:
+            jumps += 1
+            current_end = furthest
+            if current_end >= len(nums)-1:
+                break
+    
+    if current_end < len(nums)-1:
+        return -1
+    
+    return jumps
+
+# Example usage:
+print(min_jumps([2, 3, 1, 1, 4]))  # Output: 2
+print(min_jumps([3, 2, 1, 0, 4]))  # Output: -1
+```
+
+This function calculates the minimum number of jumps using a greedy approach, where it dynamically updates the furthest reachable point and adjusts the maximum steps it can move forward. It checks if all available jumps have been made before the array ends; if yes, returns -1, otherwise returns the jump count after finishing traversal of the array.

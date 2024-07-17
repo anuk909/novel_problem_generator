@@ -1,0 +1,47 @@
+### Coding Exercise:
+
+Given a list of strings, write a function to find the longest string s such that every substring of s with at least length 2 has an even count of each character.
+
+### Example:
+
+**Input:** ["abba", "zyx", "zzy", "popop", "abccba"]
+**Output:** "abccba"
+
+Explanation: 
+- "abba" is not valid because the substring "bb" contains odd count of 'b'.
+- "zyx" is not valid because no substring of length 2 or more has even counts of all characters.
+- "zzy" is not valid because all substrings of length 2 or more don't have even counts of all characters.
+- "popop" is not valid because substrings like "pop", "opo", etc., have odd counts of characters.
+- "abccba" is valid because every substring with length greater than 1 has even counts of all characters.
+
+### Python Solution:
+
+```python
+def valid_longest_string(str_list):
+    def is_valid(s):
+        from collections import Counter
+        for length in range(2, len(s)+1):
+            for start in range(len(s) - length + 1):
+                sub = s[start:start+length]
+                counts = Counter(sub)
+                if any(count % 2 != 0 for count in counts.values()):
+                    return False
+        return True
+    
+    longest_valid_str = ""
+    for s in str_list:
+        if is_valid(s) and len(s) > len(longest_valid_str):
+            longest_valid_str = s
+            
+    return longest_valid_str
+
+# Test code
+test_input = ["abba", "zyx", "zzy", "popop", "abccba"]
+print(valid_longest_string(test_input))  # Output: "abccba"
+```
+
+### Explanation:
+
+The function `valid_longest_string` takes a list of strings and tries to find the longest string for which every possible substring of length 2 or more has an even count of each character in that substring. We define an inner helper function `is_valid` which returns `True` if the string satisfies the even-count condition; otherwise, it returns `False`. 
+
+Then, for each string in the list, we check if it's valid and longer than the current longest valid string we've found. If it is, we update our result to this new string. Finally, we return the longest valid string.
