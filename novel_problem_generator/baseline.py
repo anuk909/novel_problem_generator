@@ -5,25 +5,17 @@ from openai.types.chat import ChatCompletion
 
 
 def load_config() -> Dict[str, Any]:
-    required_vars = ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT"]
-    config = {var: os.environ.get(var) for var in required_vars}
+    azure_openai_api_key = os.environ.get("AZURE_OPENAI_API_KEY")
+    azure_openai_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
 
-    if not all(config.values()):
-        missing = [var for var, value in config.items() if not value]
-        raise ValueError(
-            f"Missing required environment variables: {', '.join(missing)}"
-        )
-
-    config.update(
-        {
-            "AZURE_OPENAI_API_VERSION": "2024-04-01-preview",
-            "OPENAI_MODEL": "gpt-4-turbo-2024-04-09",
-            "ATTEMPTS": 10,
-            "OUTPUT_DIR": "problems/baseline/",
-        }
-    )
-
-    return config
+    return {
+        "AZURE_OPENAI_API_KEY": azure_openai_api_key,
+        "AZURE_OPENAI_ENDPOINT": azure_openai_endpoint,
+        "AZURE_OPENAI_API_VERSION": "2024-04-01-preview",
+        "OPENAI_MODEL": "gpt-4-turbo-2024-04-09",
+        "ATTEMPTS": 10,
+        "OUTPUT_DIR": "problems/baseline/",
+    }
 
 
 def get_openai_client(config: Dict[str, str]) -> openai.AzureOpenAI:
@@ -44,6 +36,7 @@ def generate_problem(
         completion: ChatCompletion = client.chat.completions.create(
             model=config["OPENAI_MODEL"], messages=[{"role": "user", "content": prompt}]
         )
+        assert completion.choices[0].message.content
         return completion.choices[0].message.content.strip().split("\n")
     except openai.APIError as e:
         print(f"OpenAI API error: {e}")
