@@ -75,7 +75,11 @@ The files under resources are arbitrary and it's possible to upgrade or change t
 
 ```
 .
+├── baseline.py             # Basic standalone code for generating questions in leet code style 
 ├── config.py               # Configuration handling
+└── experiment_results      # Problems and evaluations from the experiment that was done in the project.
+   ├── problems
+   ├── evaluations.csv
 ├── file_handler.py         # File I/O operations
 ├── __init__.py
 ├── main.py                 # Main execution script
