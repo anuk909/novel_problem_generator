@@ -1,4 +1,4 @@
-Group,TaskNumber,Sensibleness(1-5),Clarity(1-5),Novelty(1-5),Similar Exercise (if novelty != 5),Difficulty,Notes
+Group,TaskNumber,Sensibleness,Clarity,Novelty,Similar Exercise (if novelty != 5),Difficulty,Notes
 all features,1,5,3,3,https://leetcode.com/problems/trapping-rain-water/description/,4,
 all features,2,4,4,1,https://www.geeksforgeeks.org/palindrome-partitioning-dp-17/,3,
 all features,3,4,4,2,https://www.geeksforgeeks.org/sum-of-nodes-in-a-binary-search-tree-with-values-from-a-given-range/,4,
