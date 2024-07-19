@@ -39,7 +39,7 @@ def calculate_success_percentage(df):
         (df["Novelty"] > 3)
         & (df["Sensibleness"] > 2)
         & (df["Clarity"] > 2)
-        & (df["Difficulty"] >= 2)
+        & (df["Difficulty"] > 2)
     )
     return df.groupby("Group")["Successful"].mean() * 100
 
